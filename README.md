@@ -1,1 +1,1 @@
-Projeto SpringBoot JAVA com PostgreSQL e Heroku
+Projeto SpringBoot JAVA
