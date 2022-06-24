@@ -1,6 +1,7 @@
 package com.appspring.springbootapp.services;
 
 import com.appspring.springbootapp.repositories.UserRepository;
+import com.appspring.springbootapp.services.exceptions.DatabaseException;
 import com.appspring.springbootapp.services.exceptions.ResourceNotFoundException;
 
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Optional;
 
 import com.appspring.springbootapp.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +33,13 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
     }
 
     public User update(Long id, User obj) {
